@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuXin EV — Africa's Electric Future</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00C48C;
+    --orange: #FF6B35;
+    --gold: #FFD166;
+    --teal: #06D6A0;
+    --dark: #0D1B2A;
+    --mid: #1B2B3A;
+    --card: #162330;
+    --light: #B0BEC5;
+    --white: #FFFFFF;
+    --offwhite: #E8F0F5;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    position: fixed; top: 0; left: 0;
+    width: 12px; height: 12px;
+    background: var(--green);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed; top: 0; left: 0;
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--green);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.12s ease-out, width 0.3s, height 0.3s;
+    opacity: 0.6;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    backdrop-filter: blur(20px);
+    background: rgba(13,27,42,0.85);
+    border-bottom: 1px solid rgba(0,196,140,0.08);
+    transition: background 0.3s;
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--green); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--light);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--green); }
+  .nav-cta {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--green);
+    color: var(--dark);
+    border: none;
+    padding: 0.7rem 1.8rem;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .nav-cta:hover { background: var(--teal); transform: translateY(-2px); }
+
+  /* Currency Toggle */
+  .currency-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--card);
+    border: 1px solid rgba(0,196,140,0.25);
+    border-radius: 0;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .currency-btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--light);
+    border: none;
+    padding: 0.55rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .currency-btn.active {
+    background: var(--green);
+    color: var(--dark);
+  }
+  .currency-btn:not(.active):hover {
+    color: var(--green);
+  }
+  .currency-divider {
+    width: 1px;
+    height: 100%;
+    background: rgba(0,196,140,0.2);
+    align-self: stretch;
+  }
+
+  /* Price flash animation */
+  .price-flash {
+    animation: price-change 0.4s ease;
+  }
+  @keyframes price-change {
+    0% { opacity: 1; transform: translateY(0); }
+    30% { opacity: 0; transform: translateY(-6px); }
+    60% { opacity: 0; transform: translateY(6px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+    padding-top: 80px;
+  }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 4rem 6rem 5rem;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(0,196,140,0.1);
+    border: 1px solid rgba(0,196,140,0.3);
+    padding: 0.45rem 1rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 2rem;
+    width: fit-content;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.5); }
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 7vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .hero-title .line {
+    display: block;
+    transform: translateY(120%);
+    animation: slide-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .hero-title .line:nth-child(1) { animation-delay: 0.1s; }
+  .hero-title .line:nth-child(2) { animation-delay: 0.22s; color: var(--green); }
+  .hero-title .line:nth-child(3) { animation-delay: 0.34s; }
+  @keyframes slide-up { to { transform: translateY(0); } }
+  .hero-sub {
+    font-size: 1.1rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--light);
+    max-width: 480px;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fade-in 1s 0.6s forwards;
+  }
+  @keyframes fade-in { to { opacity: 1; } }
+  .hero-actions {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fade-in 1s 0.8s forwards;
+  }
+  .btn-primary {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--green);
+    color: var(--dark);
+    border: none;
+    padding: 1rem 2.4rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.6rem;
+  }
+  .btn-primary:hover { background: var(--teal); transform: translateY(-3px); box-shadow: 0 20px 40px rgba(0,196,140,0.25); }
+  .btn-secondary {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 1rem 2.4rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+  .btn-secondary:hover { border-color: var(--green); color: var(--green); transform: translateY(-3px); }
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    opacity: 0;
+    animation: fade-in 1s 1s forwards;
+  }
+  .hero-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.6rem;
+    letter-spacing: 1px;
+    color: var(--green);
+    display: block;
+  }
+  .hero-stat-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--light);
+  }
+  .hero-right {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .hero-bg-circle {
+    position: absolute;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(0,196,140,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  .hero-car-wrap {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    width: 100%;
+    padding: 0 1rem;
+  }
+  .hero-car-wrap img {
+    width: 100%;
+    height: 700px;
+    object-fit: contain;
+    filter: drop-shadow(0 50px 100px rgba(0,196,140,0.45));
+    animation: float 4s ease-in-out infinite, fade-in 1s 0.5s both;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .hero-green-line {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: linear-gradient(to bottom, transparent, var(--green), transparent);
+  }
+
+  /* TICKER */
+  .ticker {
+    background: var(--green);
+    overflow: hidden;
+    padding: 0.9rem 0;
+    position: relative;
+    z-index: 2;
+  }
+  .ticker-inner {
+    display: flex;
+    gap: 0;
+    animation: ticker-scroll 30s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    color: var(--dark);
+    padding: 0 3rem;
+    display: flex; align-items: center; gap: 2rem;
+  }
+  .ticker-dot { width: 8px; height: 8px; background: var(--dark); border-radius: 50%; flex-shrink: 0; }
+  @keyframes ticker-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  section { position: relative; z-index: 1; }
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .section-label::before {
+    content: '';
+    width: 30px; height: 1.5px;
+    background: var(--green);
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 5vw, 5rem);
+    line-height: 1;
+    letter-spacing: 1px;
+  }
+
+  /* VIDEO SECTION */
+  .videos-section {
+    padding: 7rem 5rem;
+    background: var(--dark);
+  }
+  .videos-section .section-title { margin-bottom: 3rem; }
+  .videos-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .video-card {
+    position: relative;
+    border-radius: 0;
+    overflow: hidden;
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.3s, border-color 0.3s;
+    cursor: pointer;
+  }
+  .video-card:hover { transform: translateY(-6px); border-color: rgba(0,196,140,0.3); }
+
+  .yt-thumb-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    cursor: pointer;
+    overflow: hidden;
+    background: #000;
+  }
+  .yt-thumb-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s, opacity 0.3s;
+  }
+  .yt-thumb-wrap:hover img { transform: scale(1.04); opacity: 0.85; }
+  .yt-play-btn {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px; height: 64px;
+    background: rgba(255,0,0,0.9);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+    pointer-events: none;
+  }
+  .yt-thumb-wrap:hover .yt-play-btn { background: #ff0000; transform: translate(-50%, -50%) scale(1.12); }
+  .yt-play-btn svg { width: 26px; height: 26px; fill: white; margin-left: 4px; }
+
+  .yt-opens-badge {
+    position: absolute;
+    top: 0.7rem; right: 0.7rem;
+    background: rgba(0,0,0,0.75);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 0.3rem 0.6rem;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .video-card-info { padding: 1rem 1.2rem; }
+  .video-card-info h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    color: var(--white);
+  }
+  .video-card-info p { font-size: 0.78rem; color: var(--light); }
+  .video-card.featured { grid-row: span 1; }
+
+  /* PROBLEM */
+  .problem {
+    padding: 8rem 5rem;
+    background: var(--mid);
+  }
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    margin-top: 4rem;
+  }
+  .problem-image-zone { position: relative; }
+  .problem-image-zone img {
+    width: 100%; height: 420px;
+    object-fit: cover;
+    display: block;
+  }
+  .big-stat-overlay {
+    position: absolute;
+    bottom: -2rem; right: -2rem;
+    background: var(--orange);
+    padding: 1.5rem 2rem;
+    text-align: center;
+  }
+  .big-stat-overlay .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--white);
+    line-height: 1;
+    display: block;
+  }
+  .big-stat-overlay .lbl {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.8);
+  }
+  .problem-cards { display: flex; flex-direction: column; gap: 1.2rem; }
+  .problem-card {
+    background: var(--card);
+    padding: 1.8rem;
+    border-left: 3px solid var(--orange);
+    display: flex;
+    gap: 1.4rem;
+    align-items: flex-start;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .problem-card:hover { transform: translateX(8px); box-shadow: -4px 0 0 var(--orange); }
+  .problem-card-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; }
+  .problem-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .problem-card p { font-size: 0.9rem; color: var(--light); line-height: 1.6; }
+
+  /* SOLUTION */
+  .solution {
+    padding: 8rem 5rem;
+    background: var(--dark);
+  }
+  .solution-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 5rem;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  .vehicles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  .vehicle-card {
+    background: var(--card);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .vehicle-card:hover { transform: translateY(-8px); }
+  .vehicle-card:hover .vehicle-img-real { transform: scale(1.05); }
+  .vehicle-img-wrap {
+    height: 320px;
+    overflow: hidden;
+    position: relative;
+    background: #0a1520;
+  }
+  .vehicle-img-real {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+    display: block;
+  }
+  .vehicle-info { padding: 1.8rem; }
+  .vehicle-accent {
+    width: 30px; height: 3px;
+    margin-bottom: 0.8rem;
+  }
+  .vehicle-info h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .vehicle-info p { font-size: 0.88rem; color: var(--light); line-height: 1.6; margin-bottom: 1rem; }
+  .vehicle-tag {
+    display: inline-block;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    background: rgba(255,255,255,0.06);
+    color: var(--light);
+    margin: 0.2rem 0.2rem 0.2rem 0;
+  }
+
+  /* WHY WE WIN */
+  .why {
+    padding: 8rem 5rem;
+    background: var(--mid);
+    overflow: hidden;
+  }
+  .why-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    margin-top: 4rem;
+  }
+  .why-quote {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    line-height: 1.1;
+    color: var(--green);
+    position: relative;
+    padding-left: 1.5rem;
+    border-left: 4px solid var(--green);
+    margin-bottom: 2.5rem;
+  }
+  .why-sub {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--light);
+    margin-bottom: 2rem;
+  }
+  .advantages { display: flex; flex-direction: column; gap: 1rem; }
+  .advantage-item {
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+    padding: 1.2rem;
+    background: var(--card);
+    transition: all 0.3s;
+    border: 1px solid transparent;
+  }
+  .advantage-item:hover { border-color: rgba(0,196,140,0.2); transform: translateX(6px); }
+  .adv-icon {
+    width: 40px; height: 40px;
+    background: rgba(0,196,140,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .adv-text h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .adv-text p { font-size: 0.83rem; color: var(--light); }
+
+  /* NUMBERS */
+  .numbers {
+    padding: 8rem 5rem;
+    background: var(--dark);
+  }
+  .numbers-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 5rem;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .number-item {
+    padding: 3rem 2rem;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .number-item:last-child { border-right: none; }
+  .number-item:hover { background: var(--card); }
+  .number-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .number-item:nth-child(1)::before { background: var(--green); }
+  .number-item:nth-child(2)::before { background: var(--orange); }
+  .number-item:nth-child(3)::before { background: var(--gold); }
+  .number-item:nth-child(4)::before { background: var(--teal); }
+  .number-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    letter-spacing: 1px;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  .number-item:nth-child(1) .number-big { color: var(--green); }
+  .number-item:nth-child(2) .number-big { color: var(--orange); }
+  .number-item:nth-child(3) .number-big { color: var(--gold); }
+  .number-item:nth-child(4) .number-big { color: var(--teal); }
+  .number-desc {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--light);
+    line-height: 1.5;
+  }
+
+  /* UNIT ECONOMICS */
+  .economics {
+    padding: 8rem 5rem;
+    background: var(--mid);
+  }
+  .econ-table {
+    width: 100%;
+    margin-top: 4rem;
+    border-collapse: collapse;
+  }
+  .econ-table thead tr { background: var(--green); }
+  .econ-table th {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--dark);
+    padding: 1.2rem 2rem;
+    text-align: left;
+  }
+  .econ-table tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.2s;
+  }
+  .econ-table tbody tr:nth-child(even) { background: var(--card); }
+  .econ-table tbody tr:hover { background: rgba(0,196,140,0.06); }
+  .econ-table td { padding: 1.5rem 2rem; font-size: 1.05rem; }
+  .profit {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    color: var(--green);
+  }
+  .margin-pill {
+    display: inline-block;
+    background: rgba(0,196,140,0.12);
+    color: var(--green);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 0.25rem 0.6rem;
+    margin-left: 0.5rem;
+  }
+
+  /* ROADMAP */
+  .roadmap {
+    padding: 8rem 5rem;
+    background: var(--dark);
+  }
+  .roadmap-track { margin-top: 5rem; position: relative; }
+  .roadmap-line {
+    position: absolute;
+    top: 30px;
+    left: 0; right: 0;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+  }
+  .roadmap-progress {
+    height: 100%;
+    width: 33%;
+    background: linear-gradient(to right, var(--green), var(--teal));
+    position: relative;
+  }
+  .roadmap-progress::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(50%, -50%);
+    width: 12px; height: 12px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--green);
+    animation: pulse-dot 2s infinite;
+  }
+  .roadmap-phases {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    padding-top: 5rem;
+  }
+  .phase-dot {
+    position: absolute;
+    top: -4.6rem; left: 0;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 3px solid var(--dark);
+  }
+  .phase-dot.active { background: var(--green); box-shadow: 0 0 16px var(--green); }
+  .phase-dot.upcoming { background: var(--mid); border-color: rgba(255,255,255,0.2); }
+  .phase-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding: 0.4rem 0.8rem;
+    display: inline-block;
+  }
+  .phase-label.now { background: var(--green); color: var(--dark); }
+  .phase-label.soon { background: var(--orange); color: var(--white); }
+  .phase-label.later { background: var(--card); color: var(--light); border: 1px solid rgba(255,255,255,0.1); }
+  .phase-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+  .phase-items { display: flex; flex-direction: column; gap: 0.6rem; }
+  .phase-item {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--light);
+  }
+  .phase-item::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+  }
+
+  /* INVESTMENT */
+  .investment {
+    padding: 8rem 5rem;
+    background: var(--mid);
+    overflow: hidden;
+    position: relative;
+  }
+  .investment::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,196,140,0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .invest-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 4rem;
+    align-items: center;
+  }
+  .invest-numbers { display: flex; flex-direction: column; gap: 2rem; }
+  .invest-card {
+    background: var(--card);
+    padding: 2.5rem;
+    border-top: 3px solid var(--green);
+    position: relative;
+    overflow: hidden;
+  }
+  .invest-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, rgba(0,196,140,0.08), transparent);
+    border-radius: 50%;
+  }
+  .invest-card-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--light);
+    margin-bottom: 0.5rem;
+  }
+  .invest-card-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    letter-spacing: 1px;
+    color: var(--green);
+    line-height: 1;
+  }
+  .invest-card-sub { font-size: 0.85rem; color: var(--light); margin-top: 0.3rem; }
+  .invest-valuation { border-top-color: var(--gold); }
+  .invest-valuation .invest-card-num { color: var(--gold); }
+  .funds-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--light);
+    margin-bottom: 2rem;
+  }
+  .fund-bar-wrap { display: flex; flex-direction: column; gap: 1.4rem; }
+  .fund-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .fund-bar-label .pct { color: var(--green); }
+  .fund-bar-track {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    position: relative;
+    overflow: hidden;
+  }
+  .fund-bar-fill {
+    height: 100%;
+    transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .fund-bar-desc { font-size: 0.78rem; color: var(--light); margin-top: 0.4rem; }
+
+  /* FOUNDER */
+  .founder {
+    padding: 8rem 5rem;
+    background: var(--dark);
+  }
+  .founder-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 6rem;
+    align-items: center;
+    margin-top: 4rem;
+  }
+  .founder-photo { position: relative; }
+  .founder-photo img {
+    width: 100%; height: 500px;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    filter: grayscale(10%);
+  }
+  .founder-accent-block {
+    position: absolute;
+    bottom: -1.5rem; right: -1.5rem;
+    width: 120px; height: 120px;
+    background: var(--green);
+    z-index: -1;
+  }
+  .founder-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .founder-role {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+  }
+  .founder-bio {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--light);
+    margin-bottom: 2.5rem;
+    border-left: 3px solid var(--gold);
+    padding-left: 1.5rem;
+  }
+  .founder-traits { display: flex; flex-direction: column; gap: 0.8rem; }
+  .founder-trait {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.9rem 1.2rem;
+    background: var(--card);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .founder-trait span:first-child { font-size: 1.2rem; }
+  .founder-contact {
+    display: flex;
+    gap: 1.2rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+  .contact-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--card);
+    padding: 0.7rem 1.2rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--light);
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.2s;
+  }
+  .contact-chip:hover { border-color: var(--green); color: var(--green); }
+
+  /* WORKING GALLERY */
+  .gallery-section {
+    padding: 7rem 5rem;
+    background: var(--mid);
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+  .gallery-item {
+    aspect-ratio: 1;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+  .gallery-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+    filter: grayscale(20%) brightness(0.9);
+  }
+  .gallery-item:hover img { transform: scale(1.08); filter: grayscale(0%) brightness(1); }
+  .gallery-item:first-child {
+    grid-column: span 2;
+    grid-row: span 2;
+    aspect-ratio: auto;
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 8rem 5rem;
+    background: var(--dark);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0,196,140,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .cta-section .section-title { font-size: clamp(3.5rem, 6vw, 6.5rem); margin-bottom: 1.5rem; }
+  .cta-section .section-title .accent { color: var(--green); }
+  .cta-actions { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+
+  /* FOOTER */
+  footer {
+    background: #080F18;
+    padding: 4rem 5rem 2.5rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 3rem;
+  }
+  .footer-brand .nav-logo { display: block; margin-bottom: 1rem; font-size: 1.8rem; }
+  .footer-brand p { font-size: 0.88rem; color: var(--light); line-height: 1.7; max-width: 260px; }
+  .footer-col h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 1.2rem;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .footer-col a { color: var(--light); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--white); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-bottom p { font-size: 0.8rem; color: rgba(176,190,197,0.6); }
+  .footer-bottom-right {
+    display: flex; align-items: center; gap: 1rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--light);
+  }
+  .footer-dot { width: 5px; height: 5px; background: var(--green); border-radius: 50%; }
+
+  /* REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    nav { padding: 1rem 2rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 5rem 2rem 4rem; }
+    .hero-right { height: 280px; }
+    .problem-grid, .why-inner, .invest-grid, .founder-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .problem, .solution, .why, .numbers, .economics, .roadmap, .investment, .founder, .cta-section, .videos-section, .gallery-section { padding: 5rem 2rem; }
+    .numbers-grid { grid-template-columns: repeat(2, 1fr); }
+    .vehicles-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .roadmap-phases { grid-template-columns: 1fr; gap: 3rem; }
+    .roadmap-line { display: none; }
+    .phase-dot { display: none; }
+    .videos-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: repeat(2,1fr); }
+    .gallery-item:first-child { grid-column: span 1; grid-row: span 1; }
+    footer { padding: 3rem 2rem 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">BuXin<span>EV</span></a>
+  <ul class="nav-links">
+    <li><a href="#videos">Story</a></li>
+    <li><a href="#solution">Vehicles</a></li>
+    <li><a href="#economics">Pricing</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#invest">Invest</a></li>
+    <li><a href="#founder">About</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <div class="currency-toggle" title="Switch currency display">
+      <button class="currency-btn active" id="btnUSD" onclick="setCurrency('USD')">USD $</button>
+      <div class="currency-divider"></div>
+      <button class="currency-btn" id="btnGMD" onclick="setCurrency('GMD')">GMD D</button>
+    </div>
+    <button class="nav-cta" onclick="document.getElementById('invest').scrollIntoView({behavior:'smooth'})">Invest Now</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-green-line"></div>
+  <div class="hero-left">
+    <div class="hero-badge">Made in The Gambia · Africa's EV Pioneer</div>
+    <h1 class="hero-title">
+      <span class="line">Africa's</span>
+      <span class="line">Electric</span>
+      <span class="line">Future</span>
+    </h1>
+    <p class="hero-sub">
+      We design and build ultra-affordable electric vehicles — scooters, cars, tractors, and minibuses — engineered for African roads, priced for African families.
+    </p>
+    <div class="hero-actions">
+      <a href="#solution" class="btn-primary">Explore Vehicles →</a>
+      <a href="#invest" class="btn-secondary">Investor Deck</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <span class="hero-stat-num">1.4B+</span>
+        <span class="hero-stat-label">Addressable Market</span>
+      </div>
+      <div>
+        <span class="hero-stat-num">3+</span>
+        <span class="hero-stat-label">Prototypes Built</span>
+      </div>
+      <div>
+        <span class="hero-stat-num">$0</span>
+        <span class="hero-stat-label">Fuel Cost to Run</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-bg-circle"></div>
+    <div class="hero-car-wrap">
+      <img src="https://res.cloudinary.com/dfizb64hx/image/upload/v1777098680/LQY143_1-removebg-preview_g774hl.png" alt="BuXin EV Electric Car" />
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <div class="ticker-item"><div class="ticker-dot"></div> Electric Scooters</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Electric Cars</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Electric Tractors</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Electric Minibuses</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Built Locally</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Designed for Africa</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Ultra-Low Cost</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Zero Fuel Cost</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Electric Scooters</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Electric Cars</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Electric Tractors</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Electric Minibuses</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Built Locally</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Designed for Africa</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Ultra-Low Cost</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Zero Fuel Cost</div>
+  </div>
+</div>
+
+<!-- VIDEO SECTION -->
+<section class="videos-section" id="videos">
+  <div class="section-label reveal">Our Story in Motion</div>
+  <h2 class="section-title reveal reveal-delay-1">Watch BuXin EV<br><span style="color:var(--green)">Come to Life</span></h2>
+  <div class="videos-grid">
+    <div class="video-card featured reveal" onclick="openVideo('-M81ltSRZGw')">
+      <div class="yt-thumb-wrap">
+        <img src="https://i.ytimg.com/vi/-M81ltSRZGw/maxresdefault.jpg" onerror="this.src='https://i.ytimg.com/vi/-M81ltSRZGw/hqdefault.jpg'" alt="BuXin EV Overview" />
+        <div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="yt-opens-badge">▶ Opens on YouTube</div>
+      </div>
+      <div class="video-card-info">
+        <h4>Latest Company Overview</h4>
+        <p>The full story of BuXin EV and Africa's electric vehicle revolution</p>
+      </div>
+    </div>
+    <div class="video-card reveal reveal-delay-1" onclick="openVideo('y9v7p4lzQ4c')">
+      <div class="yt-thumb-wrap">
+        <img src="https://i.ytimg.com/vi/y9v7p4lzQ4c/maxresdefault.jpg" onerror="this.src='https://i.ytimg.com/vi/y9v7p4lzQ4c/hqdefault.jpg'" alt="First Electric Scooter" />
+        <div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="yt-opens-badge">▶ Opens on YouTube</div>
+      </div>
+      <div class="video-card-info">
+        <h4>Where It Started</h4>
+        <p>The story of our first electric scooter build</p>
+      </div>
+    </div>
+    <div class="video-card reveal reveal-delay-2" onclick="openVideo('v6A6rx2YPfU')">
+      <div class="yt-thumb-wrap">
+        <img src="https://i.ytimg.com/vi/v6A6rx2YPfU/maxresdefault.jpg" onerror="this.src='https://i.ytimg.com/vi/v6A6rx2YPfU/hqdefault.jpg'" alt="Vehicles in Action" />
+        <div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="yt-opens-badge">▶ Opens on YouTube</div>
+      </div>
+      <div class="video-card-info">
+        <h4>Vehicles in Action</h4>
+        <p>Our electric vehicles being prepared and demonstrated</p>
+      </div>
+    </div>
+    <div class="video-card reveal reveal-delay-1" onclick="openVideo('ryRUt46CgMU')">
+      <div class="yt-thumb-wrap">
+        <img src="https://i.ytimg.com/vi/ryRUt46CgMU/maxresdefault.jpg" onerror="this.src='https://i.ytimg.com/vi/ryRUt46CgMU/hqdefault.jpg'" alt="Interview" />
+        <div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="yt-opens-badge">▶ Opens on YouTube</div>
+      </div>
+      <div class="video-card-info">
+        <h4>Interview — Abdoukadir Jabbi</h4>
+        <p>The founder on the vision, mission, and technology</p>
+      </div>
+    </div>
+    <div class="video-card reveal reveal-delay-2" onclick="openVideo('LKYgtwYwXnE')">
+      <div class="yt-thumb-wrap">
+        <img src="https://i.ytimg.com/vi/LKYgtwYwXnE/maxresdefault.jpg" onerror="this.src='https://i.ytimg.com/vi/LKYgtwYwXnE/hqdefault.jpg'" alt="Media Coverage" />
+        <div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="yt-opens-badge">▶ Opens on YouTube</div>
+      </div>
+      <div class="video-card-info">
+        <h4>Media Coverage</h4>
+        <p>BuXin EV featured in press and media interviews</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="problem-grid">
+    <div class="problem-image-zone reveal">
+      <img src="https://www.ifri.org/sites/default/files/2024-03/gouverner-transition-urbaine-afrique.jpg" alt="African roads and transport" />
+      <div class="big-stat-overlay">
+        <span class="num">500M+</span>
+        <span class="lbl">Without Reliable Transport</span>
+      </div>
+    </div>
+    <div>
+      <div class="section-label reveal">The Problem</div>
+      <h2 class="section-title reveal reveal-delay-1">Mobility in Africa<br><span style="color:var(--orange)">Is Broken</span></h2>
+      <div class="problem-cards" style="margin-top:2.5rem">
+        <div class="problem-card reveal reveal-delay-1">
+          <div class="problem-card-icon">💸</div>
+          <div>
+            <h3>Fuel Costs Are Crushing Families</h3>
+            <p>Unstable oil prices make daily transport unaffordable for millions of Africans who need to get to work, school, and markets.</p>
+          </div>
+        </div>
+        <div class="problem-card reveal reveal-delay-2">
+          <div class="problem-card-icon">⚠️</div>
+          <div>
+            <h3>Old, Unsafe, Imported Vehicles</h3>
+            <p>Aging imported fleets dominate African roads — expensive to maintain, unreliable, and designed for foreign conditions.</p>
+          </div>
+        </div>
+        <div class="problem-card reveal reveal-delay-3">
+          <div class="problem-card-icon">🚧</div>
+          <div>
+            <h3>Mobility Blocks Opportunity</h3>
+            <p>Lack of reliable transport is a barrier to income, education, healthcare, and economic growth across the continent.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="solution" id="solution">
+  <div class="solution-header">
+    <div>
+      <div class="section-label reveal">Our Solution</div>
+      <h2 class="section-title reveal reveal-delay-1">Four Vehicles.<br><span style="color:var(--green)">One Mission.</span></h2>
+    </div>
+    <p class="reveal" style="max-width:360px; color:var(--light); font-size:0.95rem; line-height:1.7; align-self:flex-end">
+      Built locally in The Gambia. Designed for rough roads. Priced for real people. This is African electric mobility — finally.
+    </p>
+  </div>
+  <div class="vehicles-grid">
+    <div class="vehicle-card reveal">
+      <div class="vehicle-img-wrap">
+        <img class="vehicle-img-real" src="https://res.cloudinary.com/dfizb64hx/image/upload/v1777098679/1CE56550-2E10-4132-B2DF-369D63E6B7DD_pcsdni.jpg" alt="BuXin EV Electric Scooter" style="object-fit:contain; background:#0a1520; padding:0.5rem;" />
+      </div>
+      <div class="vehicle-info">
+        <div class="vehicle-accent" style="background:var(--green)"></div>
+        <h3>Electric Scooter</h3>
+        <p>Ultra-affordable personal mobility for daily commuters and delivery riders. Zero fuel, zero fuss.</p>
+        <span class="vehicle-tag">Personal Use</span>
+        <span class="vehicle-tag">Delivery</span>
+        <span class="vehicle-tag price-tag" style="color:var(--green)" data-usd="From $342" data-gmd="From D 25,000">From $342</span>
+      </div>
+    </div>
+    <div class="vehicle-card reveal reveal-delay-1">
+      <div class="vehicle-img-wrap">
+        <img class="vehicle-img-real" src="https://res.cloudinary.com/dfizb64hx/image/upload/v1777098680/Gemini_Generated_Image_or2oacor2oacor2o_ov7qpb.png" alt="BuXin EV Electric Car" style="object-fit:contain; padding:0.5rem;" />
+      </div>
+      <div class="vehicle-info">
+        <div class="vehicle-accent" style="background:var(--orange)"></div>
+        <h3>Electric Car</h3>
+        <p>An affordable family car designed for African roads and conditions — not imported, not compromised.</p>
+        <span class="vehicle-tag">Family Use</span>
+        <span class="vehicle-tag">Personal</span>
+        <span class="vehicle-tag price-tag" style="color:var(--orange)" data-usd="From $1,094" data-gmd="From D 80,000">From $1,094</span>
+      </div>
+    </div>
+    <div class="vehicle-card reveal reveal-delay-2">
+      <div class="vehicle-img-wrap">
+        <img class="vehicle-img-real" src="https://res.cloudinary.com/dfizb64hx/image/upload/v1777098678/Gemini_Generated_Image_iboubqiboubqibou_1_qpntzk.png" alt="BuXin EV Electric Tractor" style="object-fit:contain; padding:0.5rem;" />
+      </div>
+      <div class="vehicle-info">
+        <div class="vehicle-accent" style="background:var(--gold)"></div>
+        <h3>Electric Tractor</h3>
+        <p>Built for African agriculture. Power through tough terrain with zero fuel dependency and low maintenance.</p>
+        <span class="vehicle-tag">Agriculture</span>
+        <span class="vehicle-tag">Cooperatives</span>
+        <span class="vehicle-tag price-tag" style="color:var(--gold)" data-usd="From $889" data-gmd="From D 65,000">From $889</span>
+      </div>
+    </div>
+    <div class="vehicle-card reveal reveal-delay-3">
+      <div class="vehicle-img-wrap">
+        <img class="vehicle-img-real" src="https://res.cloudinary.com/dfizb64hx/image/upload/v1777098680/LQY143_1-removebg-preview_g774hl.png" alt="BuXin EV Electric Minibus" style="object-fit:contain; background:#0a1520; padding:1rem;" />
+      </div>
+      <div class="vehicle-info">
+        <div class="vehicle-accent" style="background:var(--teal)"></div>
+        <h3>Electric Minibus</h3>
+        <p>Public transport that makes money every day. Partner with BuXin EV for a revenue-generating fleet.</p>
+        <span class="vehicle-tag">Fleet Ops</span>
+        <span class="vehicle-tag">Public Transport</span>
+        <span class="vehicle-tag price-tag" style="color:var(--teal)" data-usd="From $1,640" data-gmd="From D 120,000">From $1,640</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY / WORKSHOP -->
+<section class="gallery-section" id="gallery">
+  <div class="section-label reveal">Built From the Ground Up</div>
+  <h2 class="section-title reveal reveal-delay-1">Real Hands.<br><span style="color:var(--orange)">Real Machines.</span></h2>
+  <div class="gallery-grid">
+    <div class="gallery-item reveal">
+      <img src="https://res.cloudinary.com/dfizb64hx/image/upload/v1755629922/WhatsApp_Image_2022-11-17_at_05.51.07_jgehmw.jpg" alt="BuXin EV workshop" />
+    </div>
+    <div class="gallery-item reveal reveal-delay-1">
+      <img src="https://res.cloudinary.com/dfizb64hx/image/upload/v1755629926/puy_vxtlvx.jpg" alt="BuXin EV build process" />
+    </div>
+    <div class="gallery-item reveal reveal-delay-2">
+      <img src="https://res.cloudinary.com/dfizb64hx/image/upload/v1755629923/download_cra9yl.jpg" alt="BuXin EV prototype" />
+    </div>
+    <div class="gallery-item reveal reveal-delay-3">
+      <img src="https://res.cloudinary.com/dfizb64hx/image/upload/v1777098679/1CE56550-2E10-4132-B2DF-369D63E6B7DD_pcsdni.jpg" alt="BuXin EV scooter" />
+    </div>
+    <div class="gallery-item reveal reveal-delay-1">
+      <img src="https://res.cloudinary.com/dfizb64hx/image/upload/v1755629955/97E37E70-8688-4044-A0D5-0DDD3B6F8305_1_ti03hm.jpg" alt="BuXin EV vehicle" />
+    </div>
+    <div class="gallery-item reveal reveal-delay-2">
+      <img src="https://res.cloudinary.com/dfizb64hx/image/upload/v1777098679/Gemini_Generated_Image_or2oacor2oacor2o_1_awgx70.png" alt="BuXin EV work" />
+    </div>
+  </div>
+</section>
+
+<!-- WHY WE WIN -->
+<section class="why" id="why">
+  <div class="why-inner">
+    <div>
+      <div class="section-label reveal">Why We Win</div>
+      <div class="why-quote reveal reveal-delay-1">"The Toyota of Affordable African EVs"</div>
+      <p class="why-sub reveal reveal-delay-2">We are not competing with Tesla or BYD. We are building the vehicle Africa actually needs — locally manufactured, simply designed, and priced for the people who need it most.</p>
+      <a href="#invest" class="btn-primary reveal reveal-delay-3" style="width:fit-content">See the Business Case →</a>
+    </div>
+    <div class="advantages">
+      <div class="advantage-item reveal">
+        <div class="adv-icon">🏭</div>
+        <div class="adv-text">
+          <h4>Local Manufacturing</h4>
+          <p>Frames, bodies, and assembly built in The Gambia — slashing costs and creating local jobs.</p>
+        </div>
+      </div>
+      <div class="advantage-item reveal reveal-delay-1">
+        <div class="adv-icon">💰</div>
+        <div class="adv-text">
+          <h4>Ultra-Low Cost Structure</h4>
+          <p>We only import motors, batteries, and controllers. Everything else is built locally.</p>
+        </div>
+      </div>
+      <div class="advantage-item reveal reveal-delay-2">
+        <div class="adv-icon">🔧</div>
+        <div class="adv-text">
+          <h4>Simple &amp; Repairable</h4>
+          <p>Designed for local mechanics. No complex tech dependencies or foreign service centers needed.</p>
+        </div>
+      </div>
+      <div class="advantage-item reveal reveal-delay-3">
+        <div class="adv-icon">🛤️</div>
+        <div class="adv-text">
+          <h4>Built for African Conditions</h4>
+          <p>Tested on rough roads, extreme heat, and dust — not designed in a Silicon Valley lab.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY NUMBERS -->
+<section class="numbers">
+  <div class="section-label reveal">By the Numbers</div>
+  <h2 class="section-title reveal reveal-delay-1">The Opportunity<br><span style="color:var(--green)">Is Massive</span></h2>
+  <div class="numbers-grid">
+    <div class="number-item reveal">
+      <span class="number-big">1.4B+</span>
+      <div class="number-desc">People in Africa — Africa's addressable market</div>
+    </div>
+    <div class="number-item reveal reveal-delay-1">
+      <span class="number-big">54</span>
+      <div class="number-desc">Countries rapidly urbanizing and demanding mobility</div>
+    </div>
+    <div class="number-item reveal reveal-delay-2">
+      <span class="number-big">~43%</span>
+      <div class="number-desc">Gross margin per vehicle on average across all models</div>
+    </div>
+    <div class="number-item reveal reveal-delay-3">
+      <span class="number-big">$0</span>
+      <div class="number-desc">Credible affordable local EV competitors in Africa today</div>
+    </div>
+  </div>
+</section>
+
+<!-- UNIT ECONOMICS -->
+<section class="economics" id="economics">
+  <div class="section-label reveal">Unit Economics</div>
+  <h2 class="section-title reveal reveal-delay-1">Strong Margins,<br><span style="color:var(--teal)">Affordable Prices</span></h2>
+  <table class="econ-table reveal" style="margin-top:3rem">
+    <thead>
+      <tr>
+        <th>Vehicle</th>
+        <th id="th-cost">Cost (USD)</th>
+        <th id="th-sale">Sale Price (USD)</th>
+        <th id="th-profit">Gross Profit (USD)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>🛵&nbsp; Electric Scooter</td>
+        <td><span class="price-tag" data-usd="$239" data-gmd="D 17,500">$239</span></td>
+        <td><span class="price-tag" data-usd="$342" data-gmd="D 25,000">$342</span></td>
+        <td><span class="profit price-tag" data-usd="$103" data-gmd="D 7,500">$103</span><span class="margin-pill">43%</span></td>
+      </tr>
+      <tr>
+        <td>🚗&nbsp; Electric Car</td>
+        <td><span class="price-tag" data-usd="$779" data-gmd="D 57,000">$779</span></td>
+        <td><span class="price-tag" data-usd="$1,094" data-gmd="D 80,000">$1,094</span></td>
+        <td><span class="profit price-tag" data-usd="$315" data-gmd="D 23,000">$315</span><span class="margin-pill">40%</span></td>
+      </tr>
+      <tr>
+        <td>🚜&nbsp; Electric Tractor</td>
+        <td><span class="price-tag" data-usd="$615" data-gmd="D 45,000">$615</span></td>
+        <td><span class="price-tag" data-usd="$889" data-gmd="D 65,000">$889</span></td>
+        <td><span class="profit price-tag" data-usd="$274" data-gmd="D 20,000">$274</span><span class="margin-pill">44%</span></td>
+      </tr>
+      <tr>
+        <td>🚌&nbsp; Electric Minibus</td>
+        <td><span class="price-tag" data-usd="$1,148" data-gmd="D 84,000">$1,148</span></td>
+        <td><span class="price-tag" data-usd="$1,640" data-gmd="D 120,000">$1,640</span></td>
+        <td><span class="profit price-tag" data-usd="$492" data-gmd="D 36,000">$492</span><span class="margin-pill">43%</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ROADMAP -->
+<section class="roadmap" id="roadmap">
+  <div class="section-label reveal">Roadmap</div>
+  <h2 class="section-title reveal reveal-delay-1">Clear Path<br><span style="color:var(--orange)">To Scale</span></h2>
+  <div class="roadmap-track reveal">
+    <div class="roadmap-line">
+      <div class="roadmap-progress"></div>
+    </div>
+    <div class="roadmap-phases">
+      <div class="roadmap-phase" style="position:relative">
+        <div class="phase-dot active"></div>
+        <div class="phase-label now">Now</div>
+        <div class="phase-title">Prototype Stage</div>
+        <div class="phase-items">
+          <div class="phase-item">Working prototypes built and tested</div>
+          <div class="phase-item">Multiple vehicle types functional</div>
+          <div class="phase-item">Local team assembled</div>
+          <div class="phase-item">Seeking first investment round</div>
+        </div>
+      </div>
+      <div class="roadmap-phase" style="position:relative">
+        <div class="phase-dot upcoming"></div>
+        <div class="phase-label soon">6–12 Months</div>
+        <div class="phase-title">First Production</div>
+        <div class="phase-items">
+          <div class="phase-item">First production batch assembled</div>
+          <div class="phase-item">First paying customers delivered</div>
+          <div class="phase-item">Revenue generation begins</div>
+          <div class="phase-item">Fleet operations launch</div>
+        </div>
+      </div>
+      <div class="roadmap-phase" style="position:relative">
+        <div class="phase-dot upcoming"></div>
+        <div class="phase-label later">12–24 Months</div>
+        <div class="phase-title">Scale &amp; Expand</div>
+        <div class="phase-items">
+          <div class="phase-item">Scale production output</div>
+          <div class="phase-item">Expand product line</div>
+          <div class="phase-item">Regional market expansion</div>
+          <div class="phase-item">Hire 50+ local workers</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INVESTMENT -->
+<section class="investment" id="invest">
+  <div class="section-label reveal">Investment Opportunity</div>
+  <h2 class="section-title reveal reveal-delay-1">Join Us<br><span style="color:var(--green)">Early</span></h2>
+  <div class="invest-grid">
+    <div class="invest-numbers">
+      <div class="invest-card reveal">
+        <div class="invest-card-label">We Are Raising</div>
+        <div class="invest-card-num price-tag" data-usd="$273,400" data-gmd="D 20,000,000">$273,400</div>
+        <div class="invest-card-sub">For 30% equity stake in BuXin EV</div>
+      </div>
+      <div class="invest-card invest-valuation reveal reveal-delay-1">
+        <div class="invest-card-label">Implied Pre-Money Valuation</div>
+        <div class="invest-card-num price-tag" data-usd="~$911K" data-gmd="~D 66.7M">~$911K</div>
+        <div class="invest-card-sub">Early investors receive best entry point</div>
+      </div>
+      <div class="invest-card reveal reveal-delay-2" style="border-top-color:var(--teal)">
+        <div class="invest-card-label">Year 1 Revenue Projection</div>
+        <div class="invest-card-num price-tag" style="color:var(--teal)" data-usd="~$328K" data-gmd="~D 24M">~$328K</div>
+        <div class="invest-card-sub"><span class="price-tag" data-usd="~$54.7K profit in Year 1" data-gmd="~D 4M profit in Year 1">~$54.7K profit in Year 1</span></div>
+      </div>
+    </div>
+    <div class="use-of-funds reveal reveal-delay-1">
+      <div class="funds-title"><span class="price-tag" data-usd="Use of Funds — $273,400 Raised" data-gmd="Use of Funds — D 20M Raised">Use of Funds — $273,400 Raised</span></div>
+      <div class="fund-bar-wrap">
+        <div class="fund-bar-item">
+          <div class="fund-bar-label"><span>🏭 Production</span><span class="pct">85% · <span class="price-tag" data-usd="$232.4K" data-gmd="D 17M">$232.4K</span></span></div>
+          <div class="fund-bar-track"><div class="fund-bar-fill" style="width:0%;background:var(--green)" data-width="85"></div></div>
+          <div class="fund-bar-desc">Vehicles, materials, machinery, tooling &amp; inventory</div>
+        </div>
+        <div class="fund-bar-item">
+          <div class="fund-bar-label"><span>⚙️ Operations</span><span class="pct">10% · <span class="price-tag" data-usd="$27.3K" data-gmd="D 2M">$27.3K</span></span></div>
+          <div class="fund-bar-track"><div class="fund-bar-fill" style="width:0%;background:var(--orange)" data-width="10"></div></div>
+          <div class="fund-bar-desc">Salaries, marketing, distribution &amp; overhead</div>
+        </div>
+        <div class="fund-bar-item">
+          <div class="fund-bar-label"><span>🏗️ Facility</span><span class="pct">5% · <span class="price-tag" data-usd="$13.7K" data-gmd="D 1M">$13.7K</span></span></div>
+          <div class="fund-bar-track"><div class="fund-bar-fill" style="width:0%;background:var(--teal)" data-width="5"></div></div>
+          <div class="fund-bar-desc">Workshop expansion, equipment &amp; infrastructure</div>
+        </div>
+      </div>
+      <div style="margin-top:3rem; padding:2rem; background:rgba(0,196,140,0.06); border:1px solid rgba(0,196,140,0.15)">
+        <p style="font-family:'Syne',sans-serif; font-size:0.72rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--green); margin-bottom:1rem">Why Invest Now?</p>
+        <div style="display:flex;flex-direction:column;gap:0.8rem">
+          <div style="display:flex;gap:0.8rem;font-size:0.88rem;color:var(--light)"><span>🌱</span> First-mover advantage — EV adoption in Africa is just beginning</div>
+          <div style="display:flex;gap:0.8rem;font-size:0.88rem;color:var(--light)"><span>🔬</span> Prototypes already built — de-risked for investors</div>
+          <div style="display:flex;gap:0.8rem;font-size:0.88rem;color:var(--light)"><span>📈</span> Massive addressable market with no credible competitor</div>
+          <div style="display:flex;gap:0.8rem;font-size:0.88rem;color:var(--light)"><span>💰</span> Multiple revenue streams: sales + fleet + servicing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section class="founder" id="founder">
+  <div class="section-label reveal">The Founder</div>
+  <div class="founder-inner">
+    <div class="founder-photo reveal">
+      <img src="https://res.cloudinary.com/dfizb64hx/image/upload/v1777099552/ChatGPT_Image_Jul_14_2025_11_27_35_PM_c8ka25.png" alt="Abdoukadir Jabbi — Founder & CEO, BuXin EV" />
+      <div class="founder-accent-block"></div>
+    </div>
+    <div>
+      <div class="founder-name reveal">Abdoukadir<br>Jabbi</div>
+      <div class="founder-role reveal reveal-delay-1">Founder &amp; CEO · BuXin EV · The Gambia</div>
+      <p class="founder-bio reveal reveal-delay-2">
+        A hands-on technical founder who doesn't just dream about electric vehicles — he builds them. Abdoukadir has already constructed multiple working EV prototypes, demonstrating that BuXin EV is not a concept — it's an execution-focused company with real hardware rolling on African roads.
+      </p>
+      <div class="founder-traits">
+        <div class="founder-trait reveal reveal-delay-1">
+          <span>🔧</span>
+          <span>Built multiple working electric vehicle prototypes from scratch</span>
+        </div>
+        <div class="founder-trait reveal reveal-delay-2">
+          <span>⚡</span>
+          <span>Deep technical expertise in EV systems and local manufacturing</span>
+        </div>
+        <div class="founder-trait reveal reveal-delay-3">
+          <span>🌍</span>
+          <span>Born and raised in Africa — deep market understanding from day one</span>
+        </div>
+        <div class="founder-trait reveal reveal-delay-4">
+          <span>🚀</span>
+          <span>Execution-focused leader — ships products, not slide decks</span>
+        </div>
+      </div>
+      <div class="founder-contact">
+        <a href="mailto:abdoukadrjabbi1@gmail.com" class="contact-chip">📧 abdoukadrjabbi1@gmail.com</a>
+        <a href="tel:+2207741187" class="contact-chip">📞 +220 7741187</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="section-label reveal" style="justify-content:center">The Vision</div>
+  <h2 class="section-title reveal reveal-delay-1">
+    Building Africa's<br><span class="accent">Electric Future</span>
+  </h2>
+  <p class="hero-sub reveal reveal-delay-2" style="max-width:560px; margin:0 auto 3rem; text-align:center">
+    "To make electric transportation affordable for every African." — We are not just building vehicles. We are building the infrastructure of a continent's mobility.
+  </p>
+  <div class="cta-actions reveal reveal-delay-3">
+    <a href="mailto:abdoukadrjabbi1@gmail.com" class="btn-primary">Contact Us →</a>
+    <a href="tel:+2207741187" class="btn-secondary">Call +220 7741187</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">BuXin<span style="color:var(--green)">EV</span></a>
+      <p>Ultra-affordable electric vehicles designed and built locally for African roads, African families, and Africa's future.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Vehicles</h4>
+      <ul>
+        <li><a href="#solution">Electric Scooter</a></li>
+        <li><a href="#solution">Electric Car</a></li>
+        <li><a href="#solution">Electric Tractor</a></li>
+        <li><a href="#solution">Electric Minibus</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#why">Why BuXin EV</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#founder">About the Founder</a></li>
+        <li><a href="#invest">Investors</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:abdoukadrjabbi1@gmail.com">abdoukadrjabbi1@gmail.com</a></li>
+        <li><a href="tel:+2207741187">+220 7741187</a></li>
+        <li><a href="#">The Gambia, West Africa</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 BuXin EV. All rights reserved. The Gambia, West Africa.</p>
+    <div class="footer-bottom-right">
+      <div class="footer-dot"></div>
+      <span>Confidential</span>
+      <div class="footer-dot"></div>
+      <span>Investor Grade</span>
+      <div class="footer-dot"></div>
+      <span>Made in Africa</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+  document.querySelectorAll('a,button,.vehicle-card,.problem-card,.advantage-item,.gallery-item,.video-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px'; cursor.style.height = '20px';
+      ring.style.width = '60px'; ring.style.height = '60px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px'; cursor.style.height = '12px';
+      ring.style.width = '40px'; ring.style.height = '40px';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => revealObs.observe(el));
+
+  // Fund bars animation
+  const barObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.fund-bar-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width + '%';
+        });
+        barObs.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+  const investSection = document.querySelector('.investment');
+  if (investSection) barObs.observe(investSection);
+
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.background =
+      window.scrollY > 80 ? 'rgba(13,27,42,0.98)' : 'rgba(13,27,42,0.85)';
+  });
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  // VIDEO: open on YouTube
+  function openVideo(id) {
+    window.open('https://www.youtube.com/watch?v=' + id, '_blank', 'noopener,noreferrer');
+  }
+
+  // ─── CURRENCY TOGGLE ─────────────────────────────────────────────────────
+  let currentCurrency = 'USD';
+
+  // Table header labels per currency
+  const tableHeaders = {
+    USD: { cost: 'Cost (USD)', sale: 'Sale Price (USD)', profit: 'Gross Profit (USD)' },
+    GMD: { cost: 'Cost (GMD)',  sale: 'Sale Price (GMD)',  profit: 'Gross Profit (GMD)'  }
+  };
+
+  function setCurrency(currency) {
+    if (currency === currentCurrency) return;
+    currentCurrency = currency;
+
+    // Button states
+    document.getElementById('btnUSD').classList.toggle('active', currency === 'USD');
+    document.getElementById('btnGMD').classList.toggle('active', currency === 'GMD');
+
+    // Update table headers
+    const h = tableHeaders[currency];
+    document.getElementById('th-cost').textContent   = h.cost;
+    document.getElementById('th-sale').textContent   = h.sale;
+    document.getElementById('th-profit').textContent = h.profit;
+
+    // Update all .price-tag elements
+    const key = currency === 'USD' ? 'usd' : 'gmd';
+    document.querySelectorAll('.price-tag').forEach(el => {
+      if (!el.dataset[key]) return;
+
+      // Flash animation
+      el.classList.remove('price-flash');
+      void el.offsetWidth;
+      el.classList.add('price-flash');
+
+      // Set text — data attributes already contain the full "From D xxx" or "D xxx" string
+      el.textContent = el.dataset[key];
+    });
+  }
+</script>
+</body>
+</html>
